@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+   <h1>Lab Part B</h1>
+   <p></p>
+<script>
+const apiKey = 'e29c10a84a7001ed25275c1e311bf3c9';
+
+// First API call to get public IP address
+fetch('https://api.ipify.org?format=json')
+  .then(response => response.json())
+  .then(data => {
+    const ipAddress = data.ip;
+
+    // Second API call to get location based on IP address
+    fetch(`https://ipapi.co/${ipAddress}/json/`)
+      .then(response => response.json())
+      .then(locationData => {
+        const { city, region, country } = locationData;
+        console.log('Location Data:', locationData);
+
+        // Third API call to get weather based on IP location
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}`)
+          .then(response => response.json())
+          .then(weatherDataByLocation => {
+            console.log('Weather data by location:', weatherDataByLocation);
+            // Process weatherDataByLocation
+
+            // Fourth API call to get weather based on detailed location
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${region},${country}&appid=${apiKey}`)
+              .then(response => response.json())
+              .then(weatherDataByDetailedLocation => {
+                console.log('Weather data by detailed location:', weatherDataByDetailedLocation);
+                // Process weatherDataByDetailedLocation
+              })
+              .catch(error => console.log('Error fetching weather by detailed location:', error));
+          })
+          .catch(error => console.log('Error fetching weather by location:', error));
+      })
+      .catch(error => console.log('Error fetching location:', error));
+  })
+  .catch(error => console.log('Error fetching IP address:', error));
+</script>
+
+</body>
+
+</html>
